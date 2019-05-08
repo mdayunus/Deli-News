@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 
 class ListOfNewsFromSource: UITableViewController {
     
@@ -19,9 +20,10 @@ class ListOfNewsFromSource: UITableViewController {
     }
     
     let decoder = JSONDecoder()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(search))
         let task = URLSession.shared.dataTask(with: URL(string: selectedSource!)!) { (data, response, error) in
             if error != nil{
                 print(error!)
@@ -39,16 +41,17 @@ class ListOfNewsFromSource: UITableViewController {
         }
         task.resume()
     }
-
-    // MARK: - Table view data source
-
     
-
+    @objc func search(){
+        
+    }
+    
+    // MARK: - Table view data source
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return Feed?.articles.count ?? 0
     }
-
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellID, for: indexPath)
@@ -56,6 +59,14 @@ class ListOfNewsFromSource: UITableViewController {
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let url = Feed?.articles[indexPath.row].url{
+            let config = SFSafariViewController.Configuration()
+            config.barCollapsingEnabled = true
+            config.entersReaderIfAvailable = true
+            let svc = SFSafariViewController(url: URL(string: url)!, configuration: config)
+            present(svc, animated: true)
+        }
+    }
     
-
 }
