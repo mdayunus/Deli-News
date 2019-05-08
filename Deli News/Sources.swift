@@ -7,16 +7,15 @@
 //
 
 import Foundation
-
 struct Sources: Codable {
-    var sources: Source
+    var status: String
+    var sources: [Source]
 }
-
 struct Source: Codable {
     var id: String
     var name: String
     var description: String
-    var url: URL?
+    var url: String
     var category: String
     var language: String
     var country: String
