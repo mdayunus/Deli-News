@@ -16,6 +16,7 @@
 		94D443012283653E0042C79D /* Sources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D443002283653E0042C79D /* Sources.swift */; };
 		94D44303228368F50042C79D /* ListOfNewsFromSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D44302228368F50042C79D /* ListOfNewsFromSource.swift */; };
 		94D44305228371110042C79D /* SelectedSourceFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D44304228371110042C79D /* SelectedSourceFeed.swift */; };
+		94D44307228447830042C79D /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D44306228447830042C79D /* CustomCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		94D443002283653E0042C79D /* Sources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources.swift; sourceTree = "<group>"; };
 		94D44302228368F50042C79D /* ListOfNewsFromSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListOfNewsFromSource.swift; sourceTree = "<group>"; };
 		94D44304228371110042C79D /* SelectedSourceFeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedSourceFeed.swift; sourceTree = "<group>"; };
+		94D44306228447830042C79D /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 			children = (
 				94D442E822835EFD0042C79D /* AppDelegate.swift */,
 				94D442EC22835EFD0042C79D /* Main.storyboard */,
+				94D44306228447830042C79D /* CustomCell.swift */,
 				94D44302228368F50042C79D /* ListOfNewsFromSource.swift */,
 				94D442FA228360550042C79D /* SourcesTableViewController.swift */,
 				94D442FC228360F50042C79D /* Constants.swift */,
@@ -152,6 +155,7 @@
 				94D443012283653E0042C79D /* Sources.swift in Sources */,
 				94D442FB228360550042C79D /* SourcesTableViewController.swift in Sources */,
 				94D442E922835EFD0042C79D /* AppDelegate.swift in Sources */,
+				94D44307228447830042C79D /* CustomCell.swift in Sources */,
 				94D442FD228360F50042C79D /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

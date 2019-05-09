@@ -11,6 +11,8 @@ import SafariServices
 
 class ListOfNewsFromSource:UITableViewController {
     
+    let cache = NSCache<NSString, NSData>()
+    
     @IBOutlet weak var mySearchBar: UISearchBar!{
         didSet{
             mySearchBar.delegate = self
@@ -21,11 +23,7 @@ class ListOfNewsFromSource:UITableViewController {
     
     var backupFeed: SelectedSourceFeed?
     
-    var selectedSource: String?{
-        didSet{
-//            print(selectedSource!)
-        }
-    }
+    var selectedSource: String?
     
     let decoder = JSONDecoder()
     
@@ -62,8 +60,30 @@ class ListOfNewsFromSource:UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellID, for: indexPath)
-        cell.textLabel?.text = Feed?.articles[indexPath.row].title
+        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellID, for: indexPath) as! CustomCell
+        cell.TitleLabel.text = Feed?.articles[indexPath.row].title
+        cell.authorLabel?.text = Feed?.articles[indexPath.row].author
+        if Feed?.articles[indexPath.row].urlToImage != nil{
+            let nsstring = (Feed?.articles[indexPath.row].urlToImage)! as NSString
+            if cache.object(forKey: nsstring) != nil{
+                let data = (cache.object(forKey: nsstring))! as Data
+                cell.myImageView.image = UIImage(data: data)
+            }else{
+                let url = Feed?.articles[indexPath.row].urlToImage
+                let t = URLSession.shared.dataTask(with: URL(string: url!)!) {(data, response, error) in
+                    if error != nil{
+                        print(error!)
+                    }else{
+                        DispatchQueue.main.async {
+                            self.cache.setObject(data! as NSData, forKey: nsstring)
+                            tableView.reloadRows(at: [indexPath], with: .none)
+                        }
+                    }
+                    
+                }
+                t.resume()
+            }
+        }
         return cell
     }
     
@@ -85,7 +105,6 @@ extension ListOfNewsFromSource: UISearchBarDelegate{
             let s = "https://newsapi.org/v2/top-headlines?q=\(text)&sources=\(selectedSource!)&apiKey=d8187c253d5e471ea8f1d748a90fb437"
             backupFeed = Feed
             getDataFrom(url: s)
-//            print(s)
             searchBar.resignFirstResponder()
         }else{
             Feed = backupFeed
@@ -96,12 +115,17 @@ extension ListOfNewsFromSource: UISearchBarDelegate{
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        Feed = backupFeed
-        backupFeed = nil
-        tableView.reloadData()
-        searchBar.text = ""
-        searchBar.resignFirstResponder()
-//        print("ok")
+        if searchBar.text?.count != 0{
+            Feed = backupFeed
+            backupFeed = nil
+            tableView.reloadData()
+            searchBar.text = ""
+            searchBar.resignFirstResponder()
+        }else{
+            tableView.reloadData()
+            searchBar.text = ""
+            searchBar.resignFirstResponder()
+        }
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {

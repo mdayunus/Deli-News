@@ -40,6 +40,7 @@ class SourcesTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellID, for: indexPath)
+        cell.textLabel?.numberOfLines = 0
         cell.textLabel?.text = availableSources?.sources?[indexPath.row].name
 
         // Configure the cell...
