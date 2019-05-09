@@ -9,13 +9,21 @@
 import UIKit
 import SafariServices
 
-class ListOfNewsFromSource: UITableViewController {
+class ListOfNewsFromSource:UITableViewController {
+    
+    @IBOutlet weak var mySearchBar: UISearchBar!{
+        didSet{
+            mySearchBar.delegate = self
+        }
+    }
     
     var Feed: SelectedSourceFeed?
     
+    var backupFeed: SelectedSourceFeed?
+    
     var selectedSource: String?{
         didSet{
-            print(selectedSource!)
+//            print(selectedSource!)
         }
     }
     
@@ -23,8 +31,12 @@ class ListOfNewsFromSource: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(search))
-        let task = URLSession.shared.dataTask(with: URL(string: selectedSource!)!) { (data, response, error) in
+        let url = "https://newsapi.org/v2/top-headlines?sources=\(selectedSource!)&apiKey=d8187c253d5e471ea8f1d748a90fb437"
+        getDataFrom(url: url)
+    }
+    
+    func getDataFrom(url: String){
+        let task = URLSession.shared.dataTask(with: URL(string: url)!) { (data, response, error) in
             if error != nil{
                 print(error!)
             }else{
@@ -40,10 +52,6 @@ class ListOfNewsFromSource: UITableViewController {
             }
         }
         task.resume()
-    }
-    
-    @objc func search(){
-        
     }
     
     // MARK: - Table view data source
@@ -67,6 +75,41 @@ class ListOfNewsFromSource: UITableViewController {
             let svc = SFSafariViewController(url: URL(string: url)!, configuration: config)
             present(svc, animated: true)
         }
+    }
+    
+}
+extension ListOfNewsFromSource: UISearchBarDelegate{
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let text = searchBar.text else{return}
+        if searchBar.text?.count != 0{
+            let s = "https://newsapi.org/v2/top-headlines?q=\(text)&sources=\(selectedSource!)&apiKey=d8187c253d5e471ea8f1d748a90fb437"
+            backupFeed = Feed
+            getDataFrom(url: s)
+//            print(s)
+            searchBar.resignFirstResponder()
+        }else{
+            Feed = backupFeed
+            backupFeed = nil
+            tableView.reloadData()
+            searchBar.resignFirstResponder()
+        }
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        Feed = backupFeed
+        backupFeed = nil
+        tableView.reloadData()
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+//        print("ok")
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = true
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
     }
     
 }

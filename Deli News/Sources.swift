@@ -9,7 +9,7 @@
 import Foundation
 struct Sources: Codable {
     var status: String
-    var sources: [Source]
+    var sources: [Source]?
 }
 struct Source: Codable {
     var id: String

@@ -14,7 +14,7 @@ struct SelectedSourceFeed: Codable {
 }
 struct article: Codable {
     var source: Object
-    var author: String
+    var author: String?
     var title: String
     var description: String
     var url: String

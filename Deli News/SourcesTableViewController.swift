@@ -34,13 +34,13 @@ class SourcesTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return availableSources?.sources.count ?? 0
+        return availableSources?.sources?.count ?? 0
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellID, for: indexPath)
-        cell.textLabel?.text = availableSources?.sources[indexPath.row].name
+        cell.textLabel?.text = availableSources?.sources?[indexPath.row].name
 
         // Configure the cell...
 
@@ -51,8 +51,10 @@ class SourcesTableViewController: UITableViewController {
         
         if let dvc = storyboard?.instantiateViewController(withIdentifier: "News") as? ListOfNewsFromSource{
             
-            if let selectedSource = availableSources?.sources[indexPath.row].id{
-                dvc.selectedSource = "https://newsapi.org/v2/top-headlines?sources=\(selectedSource)&apiKey=d8187c253d5e471ea8f1d748a90fb437"
+            if let selectedSource = availableSources?.sources?[indexPath.row].id{
+                dvc.selectedSource = selectedSource
+                
+//                "https://newsapi.org/v2/top-headlines?sources=\(selectedSource)&apiKey=d8187c253d5e471ea8f1d748a90fb437"
                 navigationController?.pushViewController(dvc, animated: true)
             }
         }
