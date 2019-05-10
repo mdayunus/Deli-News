@@ -10,18 +10,33 @@ import UIKit
 
 class SourcesTableViewController: UITableViewController {
     
+//    @IBOutlet weak var mySearchBar: UISearchBar!{
+//        didSet{
+//            mySearchBar.delegate = self
+//        }
+//    }
+    
+    var filteredSources: [Source]?
+    
     var availableSources: Sources?
     
     let decoder = JSONDecoder()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let task  = URLSession.shared.dataTask(with: URL(string: Constants.sourceURL)!) { (data, response, error) in
+        let memoryCapacity = 500 * 1024 * 1024
+        let diskCapacity = 500 * 1024 * 1024
+        let sourceCache = URLCache(memoryCapacity: memoryCapacity, diskCapacity: diskCapacity, diskPath: "sourceDiskPath")
+        URLCache.shared = sourceCache
+        let url = URL(string: Constants.sourceURL)
+        let req = URLRequest(url: url!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 60)
+        let task = URLSession.shared.dataTask(with: req) { (data, response, error) in
             if error != nil{
                 print(error!)
             }else{
                 do{
                     self.availableSources = try self.decoder.decode(Sources.self, from: data!)
+                    self.filteredSources = self.availableSources?.sources
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
                     }
@@ -43,8 +58,6 @@ class SourcesTableViewController: UITableViewController {
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.text = availableSources?.sources?[indexPath.row].name
 
-        // Configure the cell...
-
         return cell
     }
     
@@ -54,8 +67,6 @@ class SourcesTableViewController: UITableViewController {
             
             if let selectedSource = availableSources?.sources?[indexPath.row].id{
                 dvc.selectedSource = selectedSource
-                
-//                "https://newsapi.org/v2/top-headlines?sources=\(selectedSource)&apiKey=d8187c253d5e471ea8f1d748a90fb437"
                 navigationController?.pushViewController(dvc, animated: true)
             }
         }
