@@ -30,6 +30,7 @@ class EveryThing: UITableViewController {
         print(lastSearch)
         let url = "https://newsapi.org/v2/everything?q=\(lastSearch)&sortBy=\(sb)&language=\(lang)&apiKey=d8187c253d5e471ea8f1d748a90fb437"
         getEverythingFrom(url: url)
+        print(url)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -58,7 +59,8 @@ class EveryThing: UITableViewController {
     }
     
     func getEverythingFrom(url: String){
-        let req = URLRequest(url: URL(string: url)!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 60)
+        guard let u = URL(string: url) else{return}
+        let req = URLRequest(url: u, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 60)
         let task = URLSession.shared.dataTask(with: req) { (data, response, error) in
             if error != nil{
                 print(error!)

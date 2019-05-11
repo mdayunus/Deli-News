@@ -69,7 +69,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="517"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="kB1-Na-Rpo">
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="one" translatesAutoresizingMaskIntoConstraints="NO" id="kB1-Na-Rpo">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="414"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="kB1-Na-Rpo" secondAttribute="height" multiplier="1:1" id="i3E-x8-j5a"/>
@@ -227,7 +227,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="491"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="12t-t0-3qn">
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="one" translatesAutoresizingMaskIntoConstraints="NO" id="12t-t0-3qn">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="414"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="12t-t0-3qn" secondAttribute="height" multiplier="1:1" id="oH5-mq-bg0"/>
@@ -349,4 +349,7 @@
             <point key="canvasLocation" x="2163.768115942029" y="827.67857142857144"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="one" width="945" height="776"/>
+    </resources>
 </document>
