@@ -10,12 +10,6 @@ import UIKit
 
 class SourcesTableViewController: UITableViewController {
     
-//    @IBOutlet weak var mySearchBar: UISearchBar!{
-//        didSet{
-//            mySearchBar.delegate = self
-//        }
-//    }
-    
     var filteredSources: [Source]?
     
     var availableSources: Sources?
@@ -24,12 +18,9 @@ class SourcesTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let memoryCapacity = 500 * 1024 * 1024
-        let diskCapacity = 500 * 1024 * 1024
-        let sourceCache = URLCache(memoryCapacity: memoryCapacity, diskCapacity: diskCapacity, diskPath: "sourceDiskPath")
-        URLCache.shared = sourceCache
         let url = URL(string: Constants.sourceURL)
-        let req = URLRequest(url: url!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 60)
+        let req = URLRequest(url: url!, cachePolicy: .returnCacheDataElseLoad, timeoutInterval: 60)
+        
         let task = URLSession.shared.dataTask(with: req) { (data, response, error) in
             if error != nil{
                 print(error!)
@@ -37,7 +28,7 @@ class SourcesTableViewController: UITableViewController {
                 do{
                     self.availableSources = try self.decoder.decode(Sources.self, from: data!)
                     self.filteredSources = self.availableSources?.sources
-                    DispatchQueue.main.async {
+                    OperationQueue.main.addOperation {
                         self.tableView.reloadData()
                     }
                 }catch{
@@ -49,7 +40,7 @@ class SourcesTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return availableSources?.sources?.count ?? 0
+            return availableSources?.sources?.count ?? 0
     }
 
     
@@ -57,7 +48,7 @@ class SourcesTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellID, for: indexPath)
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.text = availableSources?.sources?[indexPath.row].name
-
+        
         return cell
     }
     
@@ -71,5 +62,5 @@ class SourcesTableViewController: UITableViewController {
             }
         }
     }
-
+    
 }
