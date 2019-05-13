@@ -261,9 +261,9 @@
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="TitleLabel" destination="c2S-id-bLs" id="OOy-B5-ufF"/>
                                     <outlet property="authorLabel" destination="nR4-N3-WTy" id="nN3-Gr-Ywk"/>
                                     <outlet property="myImageView" destination="12t-t0-3qn" id="nrg-gr-PVh"/>
+                                    <outlet property="titleLabel" destination="c2S-id-bLs" id="bFi-UU-8Sz"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

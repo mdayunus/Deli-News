@@ -19,7 +19,7 @@ class SourcesTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let url = URL(string: Constants.sourceURL)
-        let req = URLRequest(url: url!, cachePolicy: .returnCacheDataElseLoad, timeoutInterval: 60)
+        let req = URLRequest(url: url!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 60)
         
         let task = URLSession.shared.dataTask(with: req) { (data, response, error) in
             if error != nil{

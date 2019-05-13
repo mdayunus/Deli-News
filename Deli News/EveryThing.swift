@@ -11,11 +11,24 @@ import SafariServices
 
 class EveryThing: UITableViewController {
     
+    var cache = NSCache<NSURL, NSData>()
+    
     @IBOutlet weak var mySearchBar: UISearchBar!{
         didSet{
             mySearchBar.delegate = self
         }
     }
+    
+    lazy var session: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.allowsCellularAccess = true
+        config.waitsForConnectivity = true
+        let memoryCapacity = 500 * 1024 * 1024
+        let diskCapacity = 500 * 1024 * 1024
+        config.urlCache = URLCache(memoryCapacity: memoryCapacity, diskCapacity: diskCapacity, diskPath: nil)
+        config.requestCachePolicy = URLRequest.CachePolicy.useProtocolCachePolicy
+        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+    }()
     
     var everyNews: SelectedSourceFeed?
     
@@ -28,9 +41,11 @@ class EveryThing: UITableViewController {
         print(sb, lang)
         let lastSearch = UserDefaults.standard.string(forKey: Constants.lastSearch) ?? "news"
         print(lastSearch)
+//        let url = "https://newsapi.org/v2/everything?q=\(lastSearch)&sortBy=\(sb)&language=\(lang)&apiKey=d8187c253d5e471ea8f1d748a90fb437"
         let url = "https://newsapi.org/v2/everything?q=\(lastSearch)&sortBy=\(sb)&language=\(lang)&apiKey=d8187c253d5e471ea8f1d748a90fb437"
         getEverythingFrom(url: url)
         print(url)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -60,22 +75,22 @@ class EveryThing: UITableViewController {
     
     func getEverythingFrom(url: String){
         guard let u = URL(string: url) else{return}
-        let req = URLRequest(url: u, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 60)
-        let task = URLSession.shared.dataTask(with: req) { (data, response, error) in
+//        let req = URLRequest(url: u, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 60)
+        let req = URLRequest(url: u)
+        session.dataTask(with: req) { (data, response, error) in
             if error != nil{
                 print(error!)
             }else{
                 do{
                     self.everyNews = try self.decoder.decode(SelectedSourceFeed.self, from: data!)
-                    OperationQueue.main.addOperation {
+                    DispatchQueue.main.async {
                         self.tableView.reloadData()
                     }
                 }catch{
                     print(error)
                 }
             }
-        }
-        task.resume()
+        }.resume()
     }
 
     // MARK: - Table view data source
@@ -91,21 +106,24 @@ class EveryThing: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellID, for: indexPath) as! CellCustom
         cell.titleLabel.text = everyNews?.articles?[indexPath.row].title
         cell.authorLabel.text = everyNews?.articles?[indexPath.row].author
-        if everyNews?.articles?[indexPath.row].urlToImage != nil{
-            let url = everyNews?.articles?[indexPath.row].urlToImage
-            let req = URLRequest(url: URL(string: url!)!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 60)
-            let t = URLSession.shared.dataTask(with: req) { (data, response, error) in
-                if error != nil{
-                    print(error!)
-                }else{
-                    OperationQueue.main.addOperation {
-                        cell.myImageView.image = UIImage(data: data!)
+        DispatchQueue.global().async {
+            if let urlString = self.everyNews?.articles?[indexPath.row].urlToImage{
+                if let url = URL(string: urlString){
+                    if let data = self.cache.object(forKey: url as NSURL){
+                        DispatchQueue.main.async {
+                            cell.myImageView.image = UIImage(data: data as Data)
+                        }
+                    }else{
+                        if let data = try? Data(contentsOf: url){
+                            self.cache.setObject(data as NSData, forKey: url as NSURL)
+                            DispatchQueue.main.async {
+                                cell.myImageView.image = UIImage(data: data)
+                            }
+                        }
                     }
                 }
             }
-            t.resume()
         }
-
         return cell
     }
     
@@ -144,4 +162,7 @@ extension EveryThing: UISearchBarDelegate{
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         searchBar.showsCancelButton = false
     }
+}
+extension EveryThing: URLSessionDelegate, URLSessionTaskDelegate, URLSessionDataDelegate{
+    
 }

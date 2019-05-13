@@ -23,7 +23,7 @@ class CustomCell: UITableViewCell {
 
     @IBOutlet weak var myImageView: UIImageView!
     
-    @IBOutlet weak var TitleLabel: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!
     
     @IBOutlet weak var authorLabel: UILabel!
     
