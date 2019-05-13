@@ -11,24 +11,22 @@ import SafariServices
 
 class EveryThing: UITableViewController {
     
-    var cache = NSCache<NSURL, NSData>()
-    
     @IBOutlet weak var mySearchBar: UISearchBar!{
         didSet{
             mySearchBar.delegate = self
         }
     }
     
-    lazy var session: URLSession = {
-        let config = URLSessionConfiguration.default
-        config.allowsCellularAccess = true
-        config.waitsForConnectivity = true
-        let memoryCapacity = 500 * 1024 * 1024
-        let diskCapacity = 500 * 1024 * 1024
-        config.urlCache = URLCache(memoryCapacity: memoryCapacity, diskCapacity: diskCapacity, diskPath: nil)
-        config.requestCachePolicy = URLRequest.CachePolicy.useProtocolCachePolicy
-        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
-    }()
+//    lazy var session: URLSession = {
+//        let config = URLSessionConfiguration.default
+//        config.allowsCellularAccess = true
+//        config.waitsForConnectivity = true
+//        let memoryCapacity = 500 * 1024 * 1024
+//        let diskCapacity = 500 * 1024 * 1024
+//        config.urlCache = URLCache(memoryCapacity: memoryCapacity, diskCapacity: diskCapacity, diskPath: nil)
+//        config.requestCachePolicy = URLRequest.CachePolicy.useProtocolCachePolicy
+//        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+//    }()
     
     var everyNews: SelectedSourceFeed?
     
@@ -75,9 +73,8 @@ class EveryThing: UITableViewController {
     
     func getEverythingFrom(url: String){
         guard let u = URL(string: url) else{return}
-//        let req = URLRequest(url: u, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 60)
         let req = URLRequest(url: u)
-        session.dataTask(with: req) { (data, response, error) in
+        URLSession.shared.dataTask(with: req) { (data, response, error) in
             if error != nil{
                 print(error!)
             }else{
@@ -97,32 +94,16 @@ class EveryThing: UITableViewController {
 
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return everyNews?.articles?.count ?? 0
     }
 
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellID, for: indexPath) as! CellCustom
         cell.titleLabel.text = everyNews?.articles?[indexPath.row].title
         cell.authorLabel.text = everyNews?.articles?[indexPath.row].author
-        DispatchQueue.global().async {
-            if let urlString = self.everyNews?.articles?[indexPath.row].urlToImage{
-                if let url = URL(string: urlString){
-                    if let data = self.cache.object(forKey: url as NSURL){
-                        DispatchQueue.main.async {
-                            cell.myImageView.image = UIImage(data: data as Data)
-                        }
-                    }else{
-                        if let data = try? Data(contentsOf: url){
-                            self.cache.setObject(data as NSData, forKey: url as NSURL)
-                            DispatchQueue.main.async {
-                                cell.myImageView.image = UIImage(data: data)
-                            }
-                        }
-                    }
-                }
-            }
+        cell.myImageView.image = UIImage(named: "noimg")
+        if let urlString = self.everyNews?.articles?[indexPath.row].urlToImage{
+        cell.myImageView.loadImagefrom(urlString: urlString)
         }
         return cell
     }
@@ -165,4 +146,38 @@ extension EveryThing: UISearchBarDelegate{
 }
 extension EveryThing: URLSessionDelegate, URLSessionTaskDelegate, URLSessionDataDelegate{
     
+}
+var taskKey: Void?
+
+extension UIImageView{
+    func loadImagefrom(urlString: String){
+        var savedTask: URLSessionTask? {
+            get { return objc_getAssociatedObject(self, &taskKey) as? URLSessionTask }
+            set { objc_setAssociatedObject(self, &taskKey, newValue, .OBJC_ASSOCIATION_RETAIN) }
+        }
+        guard let imageURL = URL(string: urlString) else{return}
+        let cache = URLCache.shared
+        let req = URLRequest(url: imageURL)
+        if let data = cache.cachedResponse(for: req)?.data{
+            self.image = UIImage(data: data)
+        }else{
+            savedTask?.cancel()
+            savedTask = nil
+            savedTask = URLSession.shared.dataTask(with: req) { (data, response, error) in
+                if error != nil{
+                    print(error!)
+                }else{
+                    print(data!)
+                    if let d = data, let r = response{
+                        let cachedData = CachedURLResponse(response: r, data: d)
+                        cache.storeCachedResponse(cachedData, for: req)
+                        OperationQueue.main.addOperation {
+                            self.image = UIImage(data: d)
+                        }
+                    }
+                }
+            }
+            savedTask?.resume()
+        }
+    }
 }

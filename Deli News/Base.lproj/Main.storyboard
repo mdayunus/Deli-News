@@ -69,7 +69,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="517"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="one" translatesAutoresizingMaskIntoConstraints="NO" id="kB1-Na-Rpo">
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noimg" translatesAutoresizingMaskIntoConstraints="NO" id="kB1-Na-Rpo">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="414"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="kB1-Na-Rpo" secondAttribute="height" multiplier="1:1" id="i3E-x8-j5a"/>
@@ -227,7 +227,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="491"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="one" translatesAutoresizingMaskIntoConstraints="NO" id="12t-t0-3qn">
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noimg" translatesAutoresizingMaskIntoConstraints="NO" id="12t-t0-3qn">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="414"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="12t-t0-3qn" secondAttribute="height" multiplier="1:1" id="oH5-mq-bg0"/>
@@ -288,11 +288,11 @@
             </objects>
             <point key="canvasLocation" x="3910.144927536232" y="120.53571428571428"/>
         </scene>
-        <!--Item-->
+        <!--Sources-->
         <scene sceneID="WH3-x3-J9c">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="zYe-bt-aaN" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="zX1-Xo-2VK"/>
+                    <tabBarItem key="tabBarItem" title="Sources" id="zX1-Xo-2VK"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="lUS-ca-xZt">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
@@ -326,11 +326,11 @@
             </objects>
             <point key="canvasLocation" x="1253.6231884057972" y="120.53571428571428"/>
         </scene>
-        <!--Item-->
+        <!--News-->
         <scene sceneID="VUo-g6-Rfa">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="WrR-vX-jDb" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="PK5-mk-uBx"/>
+                    <tabBarItem key="tabBarItem" title="News" id="PK5-mk-uBx"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="1MK-2s-bY5">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
@@ -350,6 +350,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="one" width="945" height="776"/>
+        <image name="noimg" width="602" height="902"/>
     </resources>
 </document>
